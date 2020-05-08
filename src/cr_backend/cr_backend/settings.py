@@ -12,6 +12,19 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+REP_STATUS = {
+    100: dict(code=100, message='正常'),
+    101: dict(code=101, message='token错误'),
+    110: dict(code=110, message='token过期'),
+    111: dict(code=111, message='请求错误'),
+    200: dict(code=200, message='登陆时手机号或密码错误'),
+    201: dict(code=201, message='注册错误，手机号已被注册'),
+    210: dict(code=210, message='无验证头部或验证类型错误'),
+    211: dict(code=211, message='用户不存在'),
+
+    666: dict(code=666, message='未知错误')
+}
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,12 +38,16 @@ SECRET_KEY = 'i!_d+iyptw!y22+ihpi7l_7)0gr47819^6bht@!g#owmb9c%pf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'api.picuploader.com',
+    '127.0.0.1'
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'manage_side.apps.ManageSideConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,8 +92,10 @@ WSGI_APPLICATION = 'cr_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': 'utils/dbs/my.cnf',
+        },
     }
 }
 
