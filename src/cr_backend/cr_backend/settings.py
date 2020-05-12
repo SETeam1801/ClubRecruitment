@@ -40,7 +40,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'api.picuploader.com',
-    '127.0.0.1'
+    '127.0.0.1',
+    '149.129.110.204'
 ]
 
 
