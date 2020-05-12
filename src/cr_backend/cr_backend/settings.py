@@ -47,7 +47,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'manage_side.apps.ManageSideConfig',
+    'clubRecruitment.apps.ClubrecruitmentConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
