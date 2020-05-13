@@ -20,7 +20,9 @@ REP_STATUS = {
     200: dict(code=200, message='登陆时手机号或密码错误'),
     201: dict(code=201, message='注册错误，手机号已被注册'),
     210: dict(code=210, message='无验证头部或验证类型错误'),
-    211: dict(code=211, message='用户不存在'),
+    211: dict(code=211, message='用户或社团不存在'),
+    300: dict(code=300, message='请求字段错误'),
+    301: dict(code=301, message='请求内容无数据'),
 
     666: dict(code=666, message='未知错误')
 }
