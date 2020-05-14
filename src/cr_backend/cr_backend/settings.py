@@ -40,11 +40,7 @@ SECRET_KEY = 'i!_d+iyptw!y22+ihpi7l_7)0gr47819^6bht@!g#owmb9c%pf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'api.picuploader.com',
-    '127.0.0.1',
-    '149.129.110.204'
-]
+ALLOWED_HOSTS = ["*", ]
 
 
 # Application definition
