@@ -117,7 +117,7 @@ def student_register(_request, req_js):
             student = Student(
                 user_name=req_js['userName'],
                 stu_id=req_js['stuId'],
-                shool=req_js['school'],
+                school=req_js['school'],
                 college=req_js['college'],
                 stu_class=req_js['class'],
                 mailbox=req_js['mailbox'],
