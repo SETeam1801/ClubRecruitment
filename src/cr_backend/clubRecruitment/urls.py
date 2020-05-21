@@ -10,9 +10,11 @@ urlpatterns = [
     path('managerSide/login/', views.manager_login, name='manager_login'),
     path('managerSide/clubDesc/', views.club_info, name='club_desc'),
     path('managerSide/findApps/', views.find_apps, name='find_apps'),
+    path('managerSide/editNotice/', views.edit_notice, name='edit_notice'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),
     path('studentSide/findClubs/', views.find_clubs, name='find_clubs'),
-    path('studentSide/applyClub/', views.club_apply, name='club_apply')
+    path('studentSide/applyClub/', views.club_apply, name='club_apply'),
+    path('studentSide/findNotices/', views.find_notices, name='find_notices')
 ]

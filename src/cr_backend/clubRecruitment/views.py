@@ -2,9 +2,9 @@ from django.http import JsonResponse
 import json
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .models import Admin, Student, Club, Recruitment
-from django.views import View
+from .models import Admin, Student, Club, Recruitment, Notice
 import jwt
+import datetime
 # TODO
 # 1. 信息展示模块
 # 2. 学生端登陆注册
@@ -21,8 +21,11 @@ def auth_permission_required(user_type='stu'):
         def _wrapped_view(request, *args, **kwargs):
             # 格式化权限
             user = None
+            print(request.META.get('HTTP_AUTHORIZATION'))
+
             try:
                 auth = request.META.get('HTTP_AUTHORIZATION').split()
+
             except AttributeError:
                 return JsonResponse(settings.REP_STATUS[210])
 
@@ -144,9 +147,18 @@ def login(request, lg_type):
         print(req_js)
         if lg_type == 0:
             try:
-                user = Admin.objects.get(pho_num=req_js['phoNum'], pass_word=req_js['passWord'])
-                rep = settings.REP_STATUS[100]
-                rep['data'] = dict(token=user.token)
+                user = Admin.objects.get(pho_num=req_js['phoNum'])
+                club = Club.objects.get(Admin=user)
+                if user.pass_word != req_js['passWord']:
+                    rep = settings.REP_STATUS[310]
+                else:
+                    rep = settings.REP_STATUS[100]
+                    rep['data'] = dict(
+                        userName=user.user_name,
+                        school=club.school,
+                        clubName=club.club_name,
+                        stuId=user.stu_id,
+                        token=user.token)
             except KeyError:
                 rep = settings.REP_STATUS[300]
             except Admin.DoesNotExist:
@@ -155,9 +167,21 @@ def login(request, lg_type):
                 rep = settings.REP_STATUS[200]
         elif lg_type == 1:
             try:
-                user = Student.objects.get(pho_num=req_js['phoNum'], pass_word=req_js['passWord'])
-                rep = settings.REP_STATUS[100]
-                rep['data'] = dict(token=user.token)
+                student = Student.objects.get(pho_num=req_js['phoNum'])
+                if student.pass_word != req_js['passWord']:
+                    rep = settings.REP_STATUS[310]
+                else:
+                    rep = settings.REP_STATUS[100]
+
+                    rep['data'] = dict(
+                        userName=student.user_name,
+                        stuId=student.stu_id,
+                        school=student.school,
+                        college=student.college,
+                        mailbox=student.mailbox,
+                        img=settings.DEFAULT_IMG,
+                        token=student.token)
+                    rep['data']['class'] = student.stu_class
             except KeyError:
                 rep = settings.REP_STATUS[300]
             except Student.DoesNotExist:
@@ -270,6 +294,8 @@ def club_apply(_request, req_js, stu):
         rep = settings.REP_STATUS[100]
     except KeyError:
         rep = settings.REP_STATUS[300]
+    except Club.DoesNotExist:
+        rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)
 
 
@@ -285,11 +311,6 @@ def find_apps(request, admin):
             rep = settings.REP_STATUS[100]
             rep['data'] = list()
             for app in apps:
-                # "stuName": "学生名",
-                # "stuId": "学号",
-                # "stuDesc": "个人简介",
-                # "mailbox": "邮箱",
-                # "phoNum": "联系电话"
                 club_data = dict()
                 club_data['stuName'] = app.stu_name
                 club_data['stuId'] = app.stu_id
@@ -300,4 +321,45 @@ def find_apps(request, admin):
         return JsonResponse(rep, safe=False)
     else:
         rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+@post_log
+def edit_notice(_request, req_js, admin):
+    try:
+        club = Club.objects.get(Admin=admin)
+        notice = Notice(
+            text=req_js['text'],
+            title=req_js['title'],
+            date=req_js['date'],
+            Club=club
+        )
+        notice.save()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required()
+@post_log
+def find_notices(_request, req_js, _stu):
+    try:
+        club = Club.objects.get(pk=req_js['clubId'])
+        notices = Notice.objects.filter(Club=club).order_by('-date')
+        rep = settings.REP_STATUS[100]
+        rep['data'] = list()
+        for notice in notices:
+            notice_dict = dict()
+            notice_dict['title'] = notice.title
+            notice_dict['text'] = notice.text
+            notice_dict['date'] = str(notice.date).split('+')[0]
+            rep['data'].append(notice_dict)
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Club.DoesNotExist:
+        rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)

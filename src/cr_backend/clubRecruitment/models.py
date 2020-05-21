@@ -73,7 +73,11 @@ class Recruitment(models.Model):
     Student = models.ForeignKey('Student', on_delete=models.CASCADE)
 
 
-
+class Notice(models.Model):
+    Club = models.ForeignKey('Club', on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    text = models.TextField()
+    title = models.CharField(max_length=200, default='')
 
 
 
