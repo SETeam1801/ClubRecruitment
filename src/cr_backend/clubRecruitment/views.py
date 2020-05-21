@@ -255,26 +255,6 @@ def find_clubs(request, user):
     return JsonResponse(rep, safe=False)
 
 
-@auth_permission_required()
-def club_apply(request, user):
-    if request.method == 'GET':
-        clubs = Club.objects.filter(school=user.school)
-        if len(clubs) == 0:
-            rep = settings.REP_STATUS[301]
-        else:
-            rep = settings.REP_STATUS[100]
-            rep['data'] = list()
-            for club in clubs:
-                club_data = dict()
-                club_data['社团名'] = club.club_name
-                club_data['社团简介'] = club.club_desc
-                rep['data'].append(club_data)
-        return JsonResponse(rep, safe=False)
-    else:
-        rep = settings.REP_STATUS[111]
-    return JsonResponse(rep, safe=False)
-
-
 @csrf_exempt
 @auth_permission_required()
 @post_log
