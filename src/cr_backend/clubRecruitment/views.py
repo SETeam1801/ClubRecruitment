@@ -91,7 +91,7 @@ def manager_register(_request, req_js):
                 pho_num=req_js['phoNum'])
             club = Club(
                 club_name=req_js['clubName'],
-                shool=req_js['school'],
+                school=req_js['school'],
                 club_desc='',
                 Admin=admin
             )
@@ -125,7 +125,7 @@ def student_register(_request, req_js):
                 stu_class=req_js['class'],
                 mailbox=req_js['mailbox'],
                 pho_num=req_js['phoNum'],
-                pass_word=req_js['passWord'],)
+                pass_word=req_js['passWord'])
             student.save()
             rep = settings.REP_STATUS[100]
             rep['data'] = dict(token=student.token)
