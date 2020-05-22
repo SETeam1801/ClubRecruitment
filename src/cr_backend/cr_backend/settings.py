@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
+              'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
+
 REP_STATUS = {
     100: dict(code=100, message='正常'),
     101: dict(code=101, message='token错误'),
@@ -23,6 +26,7 @@ REP_STATUS = {
     211: dict(code=211, message='用户或社团不存在'),
     300: dict(code=300, message='请求字段错误'),
     301: dict(code=301, message='请求内容无数据'),
+    310: dict(code=310, message='密码错误'),
 
     666: dict(code=666, message='未知错误')
 }
