@@ -2,11 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="79c845d5-8bc0-4619-928d-d85156a39f34" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage_side/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0002_auto_20200513_1138.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0003_student_school.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0004_auto_20200513_1645.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0005_auto_20200513_1706.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0006_notice.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/migrations/0007_notice_title.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubRecruitment/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubRecruitment/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/views/manager_side.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubRecruitment/views/manager_side.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubRecruitment/views/student_side.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubRecruitment/views/student_side.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cr_backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cr_backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cr_backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/cr_backend/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +109,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

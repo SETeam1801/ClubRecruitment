@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+PAGES = 10
+
 DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
               'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
 
@@ -23,10 +25,11 @@ REP_STATUS = {
     200: dict(code=200, message='登陆时手机号或密码错误'),
     201: dict(code=201, message='注册错误，手机号已被注册'),
     210: dict(code=210, message='无验证头部或验证类型错误'),
-    211: dict(code=211, message='用户或社团不存在'),
+    211: dict(code=211, message='请求目标不存在'),
     300: dict(code=300, message='请求字段错误'),
     301: dict(code=301, message='请求内容无数据'),
     310: dict(code=310, message='密码错误'),
+    311: dict(code=311, message='时间设置错误'),
 
     666: dict(code=666, message='未知错误')
 }

@@ -3,10 +3,9 @@
 #
 from __future__ import (absolute_import, unicode_literals)
 from django.http import JsonResponse
-import json
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from ..models import Admin, Student, Club, Recruitment, Notice
+from ..models import Student, Club, Recruitment, Notice, Department
 from .general import auth_permission_required, post_log, login
 
 
@@ -50,24 +49,30 @@ def student_login(request):
     return login(request, lg_type=1)
 
 
+@csrf_exempt
 @auth_permission_required()
-def find_clubs(request, user):
-    if request.method == 'GET':
-        clubs = Club.objects.filter(school=user.school)
-        if len(clubs) == 0:
-            rep = settings.REP_STATUS[301]
-        else:
-            rep = settings.REP_STATUS[100]
+@post_log
+def find_clubs(_request, req_js, user):
+    try:
+        clubs = Club.objects.filter(school=user.school, club_name__contains=req_js['find'])
+        pages = int(len(clubs) / settings.PAGES)
+        rep = settings.REP_STATUS[100]
+        if req_js['leaft'] <= pages:
+            rep['lastPage'] = 0 if req_js['leaft'] < pages else 1
             rep['data'] = list()
-            for club in clubs:
+            s = pages * settings.PAGES
+            e = (req_js['leaft']+1)*settings.PAGES if req_js['leaft']+1 <= pages else len(clubs)
+            for club in clubs[s:e]:
                 club_data = dict()
                 club_data['clubId'] = club.pk
                 club_data['clubName'] = club.club_name
                 club_data['clubDesc'] = club.club_desc
+                club_data['clubPictureUrl'] = settings.DEFAULT_IMG
                 rep['data'].append(club_data)
-        return JsonResponse(rep, safe=False)
-    else:
-        rep = settings.REP_STATUS[111]
+        else:
+            rep = settings.REP_STATUS[211]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
     return JsonResponse(rep, safe=False)
 
 
@@ -97,22 +102,58 @@ def club_apply(_request, req_js, stu):
 
 @csrf_exempt
 @auth_permission_required()
-@post_log
-def find_notices(_request, req_js, _stu):
+def find_notices(_request, stu, page):
     try:
-        club = Club.objects.get(pk=req_js['clubId'])
-        notices = Notice.objects.filter(Club=club).order_by('-date')
+        notices = Notice.objects.filter(Student=stu).order_by('-date')
+        pages = int(len(notices) / settings.PAGES)
         rep = settings.REP_STATUS[100]
-        rep['data'] = list()
-        for notice in notices:
-            notice_dict = dict()
-            notice_dict['title'] = notice.title
-            notice_dict['text'] = notice.text
-            notice_dict['date'] = str(notice.date).split('+')[0]
-            rep['data'].append(notice_dict)
+
+        if page <= pages:
+            rep['lastPage'] = 0 if page < pages else 1
+            rep['data'] = list()
+            s = pages * settings.PAGES
+            e = (page+1)*settings.PAGES if page+1 <= pages else len(notices)
+            for notice in notices[s:e]:
+                club = notice.Club
+                dept = notice.Department
+                notice_dict = dict()
+                notice_dict['title'] = notice.title
+                notice_dict['text'] = notice.text
+                notice_dict['date'] = str(notice.date).split('+')[0]
+                notice_dict['clubName'] = club.club_name
+                notice_dict['deptDesc'] = dept.dept_name
+                rep['data'].append(notice_dict)
+        else:
+            rep = settings.REP_STATUS[211]
     except KeyError:
         rep = settings.REP_STATUS[300]
     except Club.DoesNotExist:
         rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)
 
+
+@csrf_exempt
+@auth_permission_required()
+def show_club(_request, _stu, club_id):
+    try:
+        club = Club.objects.get(pk=int(club_id))
+        depts = Department.objects.filter(Club=club)
+        rep = settings.REP_STATUS[100]
+        rep['data'] = dict()
+        rep['data']['clubName'] = club.club_name
+        rep['data']['clubDesc'] = club.club_desc
+        rep['data']['clubPictureUrl'] = list()
+        for i in range(5):
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        rep['data']['dept'] = list()
+        for dept in depts:
+            dept_dic = dict()
+            dept_dic['deptId'] = dept.pk
+            dept_dic['deptName'] = dept.dept_name
+            dept_dic['status'] = dept.status
+            rep['data']['dept'].append(dept_dic)
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Club.DoesNotExist:
+        rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)

@@ -58,6 +58,11 @@ class Club(models.Model):
     school = models.CharField(max_length=200, default='')
     club_desc = models.TextField()
     Admin = models.ForeignKey('Admin', on_delete=models.CASCADE)
+    img0 = models.CharField(max_length=200, default='')
+    img1 = models.CharField(max_length=200, default='')
+    img2 = models.CharField(max_length=200, default='')
+    img3 = models.CharField(max_length=200, default='')
+    img4 = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.club_name
@@ -71,13 +76,33 @@ class Recruitment(models.Model):
     stu_desc = models.TextField()
     Club = models.ForeignKey('Club', on_delete=models.CASCADE)
     Student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    stu_status = models.IntegerField(default=1)
+    # 1是第一轮，0是不通过，100是通过
 
 
 class Notice(models.Model):
     Club = models.ForeignKey('Club', on_delete=models.CASCADE)
+    Department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    Student = models.ForeignKey('Student', on_delete=models.CASCADE)
     date = models.DateTimeField()
     text = models.TextField()
     title = models.CharField(max_length=200, default='')
+
+
+class Department(models.Model):
+    Club = models.ForeignKey('Club', on_delete=models.CASCADE)
+    dept_name = models.CharField(max_length=200, default='')
+    dept_desc = models.TextField()
+    start_time = models.DateTimeField(null=True, blank=True, default='2020-5-25 00:00:00')
+    end_time = models.DateTimeField(null=True, blank=True, default='2020-5-25 00:00:00')
+    qq = models.CharField(max_length=200, default='')
+    times = models.IntegerField(default=1)
+    max_num = models.IntegerField(default=0)
+    standard = models.CharField(max_length=200, default='')
+    add = models.TextField(default='')
+    status = models.IntegerField(default=0)
+    # 0表示未招新，1表示开始招新
+
 
 
 

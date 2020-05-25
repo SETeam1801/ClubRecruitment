@@ -11,10 +11,16 @@ urlpatterns = [
     path('managerSide/clubDesc/', views.club_info, name='club_desc'),
     path('managerSide/findApps/', views.find_apps, name='find_apps'),
     path('managerSide/editNotice/', views.edit_notice, name='edit_notice'),
+    path('managerSide/findDept/', views.find_depts, name='find_depts'),
+    path('managerSide/addDept/', views.add_dept, name='add_dept'),
+    path('managerSide/deleteDept/', views.delete_dept, name='delete_dept'),
+    path('managerSide/editRecruitment/', views.edit_recruitment, name='edit_recruitment'),
+
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),
     path('studentSide/findClubs/', views.find_clubs, name='find_clubs'),
+    path('studentSide/showClub/<int:club_id>/', views.show_club, name='show_club'),
     path('studentSide/applyClub/', views.club_apply, name='club_apply'),
-    path('studentSide/findNotices/', views.find_notices, name='find_notices')
+    path('studentSide/findNotices/<int:page>/', views.find_notices, name='find_notices')
 ]
