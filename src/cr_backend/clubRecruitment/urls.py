@@ -3,7 +3,7 @@
 #
 from __future__ import (absolute_import, unicode_literals)
 from django.urls import path
-from . import views
+from .views import views
 
 urlpatterns = [
     path('managerSide/register/', views.manager_register, name='manager_register'),
