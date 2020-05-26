@@ -82,6 +82,7 @@ def find_clubs(_request, req_js, user):
 def club_apply(_request, req_js, stu):
     try:
         club = Club.objects.get(pk=req_js['clubId'])
+        dept = Department.objects.get(pk=req_js['deptId'])
         rec = Recruitment(
             stu_name=req_js['stuName'],
             stu_id=req_js['stuId'],
@@ -89,6 +90,7 @@ def club_apply(_request, req_js, stu):
             mailbox=req_js['mailbox'],
             stu_desc=req_js['stuDesc'],
             Club=club,
+            Department=dept,
             Student=stu
         )
         rec.save()

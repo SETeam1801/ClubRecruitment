@@ -197,7 +197,8 @@ def find_depts(_request, admin):
     except Department.DoesNotExist:
         rep = settings.REP_STATUS[211]
     except AssertionError:
-        rep = settings.REP_STATUS[311]
+        rep = settings.REP_STATUS[100]
+        rep['data'] = list()
     return JsonResponse(rep, safe=False)
 
 

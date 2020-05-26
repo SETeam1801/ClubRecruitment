@@ -76,6 +76,7 @@ class Recruitment(models.Model):
     stu_desc = models.TextField()
     Club = models.ForeignKey('Club', on_delete=models.CASCADE)
     Student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    Department = models.ForeignKey('Department', on_delete=models.CASCADE)
     stu_status = models.IntegerField(default=1)
     # 1是第一轮，0是不通过，100是通过
 
