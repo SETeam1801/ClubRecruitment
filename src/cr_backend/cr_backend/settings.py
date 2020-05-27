@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-PAGES = 10
+PAGES = 30
+
 
 DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
               'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
@@ -37,6 +38,10 @@ REP_STATUS = {
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# 媒体文件地址
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+WEB_PATH = 'http://nomalocaris.top:8080/clubRecruitment/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
