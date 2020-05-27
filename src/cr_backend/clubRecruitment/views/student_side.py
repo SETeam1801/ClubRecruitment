@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Student, Club, Recruitment, Notice, Department
-from .general import auth_permission_required, post_log, login
+from .general import auth_permission_required, post_log, login, date_fomat
 
 
 @csrf_exempt
@@ -121,7 +121,7 @@ def find_notices(_request, stu, page):
                 notice_dict = dict()
                 notice_dict['title'] = notice.title
                 notice_dict['text'] = notice.text
-                notice_dict['date'] = str(notice.date).split('+')[0]
+                notice_dict['date'] = date_fomat(notice.date)
                 notice_dict['clubName'] = club.club_name
                 notice_dict['deptDesc'] = dept.dept_name
                 rep['data'].append(notice_dict)
@@ -137,6 +137,13 @@ def find_notices(_request, stu, page):
 @csrf_exempt
 @auth_permission_required()
 def show_club(_request, _stu, club_id):
+    """
+    展示社团、部门信息
+    :param _request:
+    :param _stu:
+    :param club_id:
+    :return:
+    """
     try:
         club = Club.objects.get(pk=int(club_id))
         depts = Department.objects.filter(Club=club)
@@ -153,6 +160,15 @@ def show_club(_request, _stu, club_id):
             dept_dic['deptId'] = dept.pk
             dept_dic['deptName'] = dept.dept_name
             dept_dic['status'] = dept.status
+            dept_dic['recruitment'] = dict()
+            dept_dic['recruitment']["startTime"] = date_fomat(dept.start_time)
+            dept_dic['recruitment']["endTime"] = date_fomat(dept.end_time)
+            dept_dic['recruitment']["deptId"] = dept.pk
+            dept_dic['recruitment']["qq"] = dept.qq
+            dept_dic['recruitment']["times"] = dept.times
+            dept_dic['recruitment']["maxNum"] = dept.max_num
+            dept_dic['recruitment']["standard"] = dept.standard
+            dept_dic['recruitment']["add"] = dept.add
             rep['data']['dept'].append(dept_dic)
     except KeyError:
         rep = settings.REP_STATUS[300]

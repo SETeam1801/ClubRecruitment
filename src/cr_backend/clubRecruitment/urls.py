@@ -3,13 +3,15 @@
 #
 from __future__ import (absolute_import, unicode_literals)
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import views
 
 urlpatterns = [
     path('managerSide/register/', views.manager_register, name='manager_register'),
     path('managerSide/login/', views.manager_login, name='manager_login'),
     path('managerSide/clubDesc/', views.club_info, name='club_desc'),
-    path('managerSide/findApps/', views.find_apps, name='find_apps'),
+    path('managerSide/findApps/<int:dept_id>/', views.find_apps, name='find_apps'),
     path('managerSide/editNotice/', views.edit_notice, name='edit_notice'),
     path('managerSide/findDept/', views.find_depts, name='find_depts'),
     path('managerSide/addDept/', views.add_dept, name='add_dept'),
@@ -24,3 +26,5 @@ urlpatterns = [
     path('studentSide/applyClub/', views.club_apply, name='club_apply'),
     path('studentSide/findNotices/<int:page>/', views.find_notices, name='find_notices')
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -105,6 +105,10 @@ class Department(models.Model):
     # 0表示未招新，1表示开始招新
 
 
-
+class Img(models.Model):
+    """
+    图片类
+    """
+    url = models.ImageField(upload_to='img/%Y%m%d/', blank=True)
 
 

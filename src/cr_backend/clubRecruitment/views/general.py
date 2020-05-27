@@ -136,3 +136,5 @@ def login(request, lg_type):
     return JsonResponse(rep, safe=False)
 
 
+def date_fomat(date):
+    return str(date).split('+')[0]

@@ -74,24 +74,28 @@ def club_info(_request, req_js, user):
 
 @csrf_exempt
 @auth_permission_required(user_type='admin')
-def find_apps(request, admin):
+def find_apps(request, _admin, dept_id):
     if request.method == 'GET':
-        club = Club.objects.get(Admin=admin)
-        apps = Recruitment.objects.filter(Club=club)
-        if len(apps) == 0:
-            rep = settings.REP_STATUS[301]
-        else:
-            rep = settings.REP_STATUS[100]
-            rep['data'] = list()
-            for app in apps:
-                club_data = dict()
-                club_data['stuName'] = app.stu_name
-                club_data['stuId'] = app.stu_id
-                club_data['stuDesc'] = app.stu_desc
-                club_data['mailbox'] = app.mailbox
-                club_data['phoNum'] = app.pho_num
-                rep['data'].append(club_data)
-        return JsonResponse(rep, safe=False)
+        try:
+            dept = Department.objects.get(pk=dept_id)
+            apps = Recruitment.objects.filter(Department=dept)
+            if len(apps) == 0:
+                rep = settings.REP_STATUS[301]
+            else:
+                rep = settings.REP_STATUS[100]
+                rep['data'] = list()
+                for app in apps:
+                    app_data = dict()
+                    app_data['id'] = app.pk
+                    app_data['stuName'] = app.stu_name
+                    app_data['stuId'] = app.stu_id
+                    app_data['stuDesc'] = app.stu_desc
+                    app_data['mailbox'] = app.mailbox
+                    app_data['phoNum'] = app.pho_num
+                    app_data['status'] = app.stu_status
+                    rep['data'].append(app_data)
+        except Department.DoesNotExist:
+            rep = settings.REP_STATUS[211]
     else:
         rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)
