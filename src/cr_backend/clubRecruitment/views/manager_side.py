@@ -83,17 +83,21 @@ def find_apps(request, _admin, dept_id):
                 rep = settings.REP_STATUS[301]
             else:
                 rep = settings.REP_STATUS[100]
-                rep['data'] = list()
+                rep['data'] = dict()
+                rep['data']['students'] = list()
+                rep['data']['status'] = apps[0].stu_status
                 for app in apps:
                     app_data = dict()
                     app_data['id'] = app.pk
                     app_data['stuName'] = app.stu_name
-                    app_data['stuId'] = app.stu_id
-                    app_data['stuDesc'] = app.stu_desc
-                    app_data['mailbox'] = app.mailbox
-                    app_data['phoNum'] = app.pho_num
-                    app_data['status'] = app.stu_status
-                    rep['data'].append(app_data)
+                    stu = app.Student
+                    app_data['img'] = stu.avatar
+                    if rep['data']['status'] == 0 and app.stu_status != 0:
+                        rep['data']['status'] = app.stu_status
+                    rep['data']['students'].append(app_data)
+                rep['data']['stuNum'] = len(apps)
+                rep['data']['passNum'] = len([app for app in apps if app.stu_status >= dept.times+1])
+                rep['data']['deleteNum'] = len([app for app in apps if app.stu_status == 0])
         except Department.DoesNotExist:
             rep = settings.REP_STATUS[211]
     else:
