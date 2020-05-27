@@ -17,14 +17,15 @@ urlpatterns = [
     path('managerSide/addDept/', views.add_dept, name='add_dept'),
     path('managerSide/deleteDept/', views.delete_dept, name='delete_dept'),
     path('managerSide/editRecruitment/', views.edit_recruitment, name='edit_recruitment'),
-
+    path('managerSide/uploadImg/', views.upload_img, name='upload_img'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),
     path('studentSide/findClubs/', views.find_clubs, name='find_clubs'),
     path('studentSide/showClub/<int:club_id>/', views.show_club, name='show_club'),
     path('studentSide/applyClub/', views.club_apply, name='club_apply'),
-    path('studentSide/findNotices/<int:page>/', views.find_notices, name='find_notices')
+    path('studentSide/findNotices/<int:page>/', views.find_notices, name='find_notices'),
+    path('studentSide/uploadAvatar/', views.upload_avatar, name='upload_avatar')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

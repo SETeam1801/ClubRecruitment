@@ -120,7 +120,7 @@ def login(request, lg_type):
                         school=student.school,
                         college=student.college,
                         mailbox=student.mailbox,
-                        img=settings.DEFAULT_IMG,
+                        img=settings.DEFAULT_IMG if student.avatar == '' else student.avatar,
                         token=student.token)
                     rep['data']['class'] = student.stu_class
             except KeyError:

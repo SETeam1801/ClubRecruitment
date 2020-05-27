@@ -5,7 +5,7 @@ from __future__ import (absolute_import, unicode_literals)
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from ..models import Student, Club, Recruitment, Notice, Department
+from ..models import Student, Club, Recruitment, Notice, Department, Img
 from .general import auth_permission_required, post_log, login, date_fomat
 
 
@@ -167,6 +167,7 @@ def show_club(_request, _stu, club_id):
             dept_dic['recruitment']["qq"] = dept.qq
             dept_dic['recruitment']["times"] = dept.times
             dept_dic['recruitment']["maxNum"] = dept.max_num
+            dept_dic['recruitment']["recruitNum"] = dept.recruit_num
             dept_dic['recruitment']["standard"] = dept.standard
             dept_dic['recruitment']["add"] = dept.add
             rep['data']['dept'].append(dept_dic)
@@ -174,4 +175,20 @@ def show_club(_request, _stu, club_id):
         rep = settings.REP_STATUS[300]
     except Club.DoesNotExist:
         rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required()
+def upload_avatar(request, stu):
+    if request.method == 'POST':
+        avatar = request.FILES.get('img')
+        img = Img(url=avatar)
+        img.save()
+        rep = settings.REP_STATUS[100]
+        rep['url'] = settings.WEB_PATH + img.url.name
+        stu.avatar = rep['url']
+        stu.save()
+    else:
+        rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)

@@ -5,7 +5,7 @@ from __future__ import (absolute_import, unicode_literals)
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from ..models import Admin, Student, Club, Recruitment, Notice, Department
+from ..models import Admin, Student, Club, Recruitment, Notice, Department, Img
 from .general import auth_permission_required, post_log, login
 import time
 
@@ -220,6 +220,7 @@ def edit_recruitment(_request, req_js, _admin):
         dept.qq = req_js['qq']
         dept.times = req_js['times']
         dept.max_num = req_js['maxNum']
+        dept.recruit_num = req_js['recruitNum']
         dept.standard = req_js['standard']
         dept.add = req_js['add']
         dept.status = 1
@@ -234,4 +235,28 @@ def edit_recruitment(_request, req_js, _admin):
     return JsonResponse(rep, safe=False)
 
 
-
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+def upload_img(request, admin):
+    if request.method == 'POST':
+        avatar = request.FILES.get('img')
+        img = Img(url=avatar)
+        img.save()
+        rep = settings.REP_STATUS[100]
+        rep['url'] = settings.WEB_PATH + img.url.name
+        club = Club.objects.get(Admin=admin)
+        if club.place == 0:
+            club.img0 = rep['url']
+        elif club.place == 1:
+            club.img1 = rep['url']
+        elif club.place == 2:
+            club.img2 = rep['url']
+        elif club.place == 3:
+            club.img3 = rep['url']
+        elif club.place == 4:
+            club.img4 = rep['url']
+        club.place = (club.place + 1) % 5
+        club.save()
+    else:
+        rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)

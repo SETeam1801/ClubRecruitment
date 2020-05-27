@@ -5,6 +5,13 @@ from datetime import datetime, timedelta
 from django.conf import settings
 
 
+class Img(models.Model):
+    """
+    图片类
+    """
+    url = models.ImageField(upload_to='img/%Y%m%d/', blank=True)
+
+
 class User(models.Model):
     user_name = models.CharField(max_length=200)
     pass_word = models.CharField(max_length=200)
@@ -48,6 +55,7 @@ class Student(User):
     stu_class = models.CharField(max_length=200)
     mailbox = models.CharField(max_length=200)
     school = models.CharField(max_length=200, default='')
+    avatar = models.CharField(max_length=200, default='')
 
 
 class Club(models.Model):
@@ -63,6 +71,7 @@ class Club(models.Model):
     img2 = models.CharField(max_length=200, default='')
     img3 = models.CharField(max_length=200, default='')
     img4 = models.CharField(max_length=200, default='')
+    place = models.IntegerField(default=0)
 
     def __str__(self):
         return self.club_name
@@ -99,16 +108,13 @@ class Department(models.Model):
     qq = models.CharField(max_length=200, default='')
     times = models.IntegerField(default=1)
     max_num = models.IntegerField(default=0)
+    recruit_num = models.IntegerField(default=0)
     standard = models.CharField(max_length=200, default='')
     add = models.TextField(default='')
     status = models.IntegerField(default=0)
     # 0表示未招新，1表示开始招新
 
 
-class Img(models.Model):
-    """
-    图片类
-    """
-    url = models.ImageField(upload_to='img/%Y%m%d/', blank=True)
+
 
 
