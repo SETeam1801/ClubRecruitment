@@ -19,6 +19,8 @@ urlpatterns = [
     path('managerSide/editRecruitment/', views.edit_recruitment, name='edit_recruitment'),
     path('managerSide/uploadImg/', views.upload_img, name='upload_img'),
     path('managerSide/sendMails/', views.send_mails, name='send_mails'),
+    path('managerSide/clubInfo/', views.club_info, name='club_info'),
+    path('managerSide/findStu/<int:app_id>/', views.stu_info, name='stu_info'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),

@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Admin, Student, Club, Recruitment, Notice, Department, Img
-from .general import auth_permission_required, post_log, login, send
+from .general import auth_permission_required, post_log, login, send, date_fomat
 import time
 
 
@@ -282,4 +282,63 @@ def send_mails(_request, req_js, _admin):
         rep = settings.REP_STATUS[100]
     except Student.DoesNotExist:
         rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+def club_info(_request, admin):
+    try:
+        club = Club.objects.get(Admin=admin)
+        depts = Department.objects.filter(Club=club)
+        rep = settings.REP_STATUS[100]
+        rep['data'] = dict()
+        rep['data']['clubName'] = club.club_name
+        rep['data']['clubDesc'] = club.club_desc
+        rep['data']['clubPictureUrl'] = list()
+        for i in range(5):
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        rep['data']['dept'] = list()
+        for dept in depts:
+            dept_dic = dict()
+            dept_dic['deptId'] = dept.pk
+            dept_dic['deptName'] = dept.dept_name
+            dept_dic['status'] = dept.status
+            dept_dic['recruitment'] = dict()
+            dept_dic['recruitment']["startTime"] = date_fomat(dept.start_time)
+            dept_dic['recruitment']["endTime"] = date_fomat(dept.end_time)
+            dept_dic['recruitment']["deptId"] = dept.pk
+            dept_dic['recruitment']["qq"] = dept.qq
+            dept_dic['recruitment']["times"] = dept.times
+            dept_dic['recruitment']["maxNum"] = dept.max_num
+            dept_dic['recruitment']["recruitNum"] = dept.recruit_num
+            dept_dic['recruitment']["standard"] = dept.standard
+            dept_dic['recruitment']["add"] = dept.add
+            rep['data']['dept'].append(dept_dic)
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Club.DoesNotExist:
+        rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+def stu_info(request, _admin, app_id):
+    if request.method == 'GET':
+        try:
+            app = Recruitment.objects.get(pk=app_id)
+            dept = app.Department
+            rep = settings.REP_STATUS[100]
+            rep['data'] = dict()
+            rep['data']['stuName'] = app.stu_name
+            rep['data']['stuId'] = app.stu_id
+            rep['data']['deptName'] = dept.dept_name
+            rep['data']['phoNum'] = app.pho_num
+            rep['data']['mailbox'] = app.mailbox
+            rep['data']['stuDesc'] = app.stu_desc
+        except Recruitment.DoesNotExist:
+            rep = settings.REP_STATUS[211]
+    else:
+        rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)
