@@ -278,7 +278,7 @@ def send_mails(_request, req_js, _admin):
         for stu_id in req_js['receiverList']:
             stu = Student.objects.get(pk=stu_id)
             receivers.append(stu.mailbox)
-        send(req_js['title'], req_js['body'], req_js['receiverList'])
+        send(req_js['title'], req_js['body'], receivers)
         rep = settings.REP_STATUS[100]
     except Student.DoesNotExist:
         rep = settings.REP_STATUS[211]
