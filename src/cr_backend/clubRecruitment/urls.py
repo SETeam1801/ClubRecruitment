@@ -18,6 +18,7 @@ urlpatterns = [
     path('managerSide/deleteDept/', views.delete_dept, name='delete_dept'),
     path('managerSide/editRecruitment/', views.edit_recruitment, name='edit_recruitment'),
     path('managerSide/uploadImg/', views.upload_img, name='upload_img'),
+    path('managerSide/sendMails/', views.send_mails, name='send_mails'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),
@@ -25,7 +26,11 @@ urlpatterns = [
     path('studentSide/showClub/<int:club_id>/', views.show_club, name='show_club'),
     path('studentSide/applyClub/', views.club_apply, name='club_apply'),
     path('studentSide/findNotices/<int:page>/', views.find_notices, name='find_notices'),
-    path('studentSide/uploadAvatar/', views.upload_avatar, name='upload_avatar')
+    path('studentSide/uploadAvatar/', views.upload_avatar, name='upload_avatar'),
+    path('studentSide/enteredPage/', views.entered_page, name='entered_page'),
+    path('studentSide/changePersonalInformation/', views.change_info, name='change_info'),
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

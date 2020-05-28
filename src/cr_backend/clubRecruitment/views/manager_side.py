@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Admin, Student, Club, Recruitment, Notice, Department, Img
-from .general import auth_permission_required, post_log, login
+from .general import auth_permission_required, post_log, login, send
 import time
 
 
@@ -96,7 +96,7 @@ def find_apps(request, _admin, dept_id):
                         rep['data']['status'] = app.stu_status
                     rep['data']['students'].append(app_data)
                 rep['data']['stuNum'] = len(apps)
-                rep['data']['passNum'] = len([app for app in apps if app.stu_status >= dept.times+1])
+                rep['data']['passNum'] = len([app for app in apps if app.stu_status > dept.times])
                 rep['data']['deleteNum'] = len([app for app in apps if app.stu_status == 0])
         except Department.DoesNotExist:
             rep = settings.REP_STATUS[211]
@@ -150,6 +150,7 @@ def add_dept(_request, req_js, admin):
     """
     try:
         club = Club.objects.get(Admin=admin)
+        assert len(Department.objects.filter(dept_name=req_js['deptName'])) == 0
         dept = Department(
             Club=club,
             dept_name=req_js['deptName'],
@@ -159,6 +160,8 @@ def add_dept(_request, req_js, admin):
         rep = settings.REP_STATUS[100]
     except KeyError:
         rep = settings.REP_STATUS[300]
+    except AssertionError:
+        rep = settings.REP_STATUS[400]
     return JsonResponse(rep, safe=False)
 
 
@@ -263,4 +266,20 @@ def upload_img(request, admin):
         club.save()
     else:
         rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+@post_log
+def send_mails(_request, req_js, _admin):
+    try:
+        receivers = list()
+        for stu_id in req_js['receiverList']:
+            stu = Student.objects.get(pk=stu_id)
+            receivers.append(stu.mailbox)
+        send(req_js['title'], req_js['body'], req_js['receiverList'])
+        rep = settings.REP_STATUS[100]
+    except Student.DoesNotExist:
+        rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)

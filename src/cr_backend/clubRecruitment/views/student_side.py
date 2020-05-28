@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Student, Club, Recruitment, Notice, Department, Img
-from .general import auth_permission_required, post_log, login, date_fomat
+from .general import auth_permission_required, post_log, login, date_fomat, to_round_str
 
 
 @csrf_exempt
@@ -52,6 +52,25 @@ def student_login(request):
 @csrf_exempt
 @auth_permission_required()
 @post_log
+def change_info(_request, req_js, stu):
+    try:
+        stu.user_name = req_js['userName']
+        stu.stu_id = req_js['stuId']
+        stu.school = req_js['school']
+        stu.college = req_js['college']
+        stu.stu_class = req_js['class']
+        stu.mailbox = req_js['mailbox']
+        stu.pho_num = req_js['phoNum']
+        stu.save()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required()
+@post_log
 def find_clubs(_request, req_js, user):
     try:
         clubs = Club.objects.filter(school=user.school, club_name__contains=req_js['find'])
@@ -83,6 +102,7 @@ def club_apply(_request, req_js, stu):
     try:
         club = Club.objects.get(pk=req_js['clubId'])
         dept = Department.objects.get(pk=req_js['deptId'])
+        assert len(Recruitment.objects.filter(Department=dept)) == 0
         rec = Recruitment(
             stu_name=req_js['stuName'],
             stu_id=req_js['stuId'],
@@ -99,6 +119,8 @@ def club_apply(_request, req_js, stu):
         rep = settings.REP_STATUS[300]
     except Club.DoesNotExist:
         rep = settings.REP_STATUS[211]
+    except AssertionError:
+        rep = settings.REP_STATUS[400]
     return JsonResponse(rep, safe=False)
 
 
@@ -189,6 +211,51 @@ def upload_avatar(request, stu):
         rep['url'] = settings.WEB_PATH + img.url.name
         stu.avatar = rep['url']
         stu.save()
+    else:
+        rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required()
+def entered_page(request, stu):
+    """
+    查看已报名的部门信息
+    :param request:
+    :param stu:
+    :return:
+    """
+    if request.method == 'GET':
+        recruits = Recruitment.objects.filter(Student=stu)
+        clubs = list()
+        for recruit in recruits:
+            if recruit.Club not in clubs:
+                clubs.append(recruit.Club)
+        rep = settings.REP_STATUS[100]
+        rep['data'] = list()
+        for club in clubs:
+            club_info = dict()
+            club_info['clubId'] = club.pk
+            club_info['clubName'] = club.club_name
+            club_info['clubDesc'] = club.club_desc
+            club_info['clubPictureUrl'] = club.img0 if club.img0 != '' else settings.DEFAULT_IMG
+            club_info['entered'] = list()
+            for dept in [recruit.Department for recruit in recruits if recruit.Club == club]:
+                recruit = [recruit for recruit in recruits if recruit.Department == dept][0]
+                dept_info = dict()
+                dept_info['department'] = dept.pk
+                current_status = recruit.stu_status
+                current_round = dept.current_round
+                times = dept.times
+                dept_info['lastRound'] = '' if current_round <= 1 else \
+                    to_round_str(dept.current_round - 1)
+                dept_info['lastState'] = '通过' if current_status != 0 else '不通过'
+                if dept_info['lastRound'] == '':
+                    dept_info['lastState'] = ''
+                dept_info['currentRound'] = '' if current_status > times else to_round_str(dept.current_round)
+                dept_info['nextRound'] = '' if current_status == times else to_round_str(dept.current_round + 1)
+                club_info['entered'].append(dept_info)
+            rep['data'].append(club_info)
     else:
         rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)

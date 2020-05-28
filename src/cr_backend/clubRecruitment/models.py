@@ -112,6 +112,7 @@ class Department(models.Model):
     standard = models.CharField(max_length=200, default='')
     add = models.TextField(default='')
     status = models.IntegerField(default=0)
+    current_round = models.IntegerField(default=1)
     # 0表示未招新，1表示开始招新
 
 

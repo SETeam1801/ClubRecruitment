@@ -5,7 +5,7 @@ from __future__ import (absolute_import, unicode_literals)
 from django.http import JsonResponse
 import json
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 from ..models import Admin, Student, Club, Recruitment, Notice
 import jwt
 import datetime
@@ -31,7 +31,7 @@ def auth_permission_required(user_type='stu'):
                 auth = request.META.get('HTTP_AUTHORIZATION').split()
 
             except AttributeError:
-                return JsonResponse(settings.REP_STATUS[210])
+                return JsonResponse(settings.REP_STATUS[210], safe=False)
 
             # 用户通过API获取数据验证流程
             if auth[0].lower() == 'bearer':
@@ -40,22 +40,22 @@ def auth_permission_required(user_type='stu'):
                     print('token验证成功, %s' % token)
                     user_id = token['data']['id']
                 except jwt.ExpiredSignatureError:
-                    return JsonResponse(settings.REP_STATUS[110])
+                    return JsonResponse(settings.REP_STATUS[110], safe=False)
                 except jwt.InvalidTokenError:
-                    return JsonResponse(settings.REP_STATUS[101])
+                    return JsonResponse(settings.REP_STATUS[101], safe=False)
 
                 if user_type == 'stu':
                     try:
                         user = Student.objects.get(pk=user_id)
                     except Student.DoesNotExist:
-                        return JsonResponse(settings.REP_STATUS[211])
+                        return JsonResponse(settings.REP_STATUS[211], safe=False)
                 elif user_type == 'admin':
                     try:
                         user = Admin.objects.get(pk=user_id)
                     except Admin.DoesNotExist:
-                        return JsonResponse(settings.REP_STATUS[211])
+                        return JsonResponse(settings.REP_STATUS[211], safe=False)
             else:
-                return JsonResponse(settings.REP_STATUS[210])
+                return JsonResponse(settings.REP_STATUS[210], safe=False)
             return view_func(request, user, *args, **kwargs)
         return _wrapped_view
     return decorator
@@ -138,3 +138,20 @@ def login(request, lg_type):
 
 def date_fomat(date):
     return str(date).split('+')[0]
+
+
+def send(title, body, receivers):
+    send_mail(
+        # 发送邮件的标题
+        settings.EMAIL_SUBJECT_PREFIX + title,
+        # 发送邮件的内容
+        body,
+        # 发送者
+        settings.EMAIL_HOST_USER,
+        # 接受者
+        receivers)
+    return True
+
+
+def to_round_str(round_int):
+    return '第' + str(round_int) + '轮'
