@@ -29,6 +29,7 @@ EMAIL_SUBJECT_PREFIX = '[招新通]'
 # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
 EMAIL_USE_SSL = True
 
+DEFAULT_FROM_EMAIL = '13652831404@163.com'
 
 DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
               'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
