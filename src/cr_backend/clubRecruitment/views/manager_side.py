@@ -302,6 +302,7 @@ def club_info(_request, admin):
         for dept in depts:
             dept_dic = dict()
             dept_dic['deptId'] = dept.pk
+            dept_dic['deptDesc'] = dept.dept_desc
             dept_dic['deptName'] = dept.dept_name
             dept_dic['status'] = dept.status
             dept_dic['recruitment'] = dict()
