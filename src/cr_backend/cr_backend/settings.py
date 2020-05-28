@@ -14,6 +14,20 @@ import os
 
 PAGES = 30
 
+# 发送邮件设置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# SMTP地址
+EMAIL_HOST = 'smtp.163.com'
+# SMTP端口
+EMAIL_PORT = 25
+# 自己的邮箱
+EMAIL_HOST_USER = '13652831404@163.com'
+# 自己的邮箱授权码，非密码
+EMAIL_HOST_PASSWORD = 'LUICSMSJSIJAWWRG'
+
+EMAIL_SUBJECT_PREFIX = '[招新通]'
+# 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
+
 
 DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
               'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
@@ -31,6 +45,7 @@ REP_STATUS = {
     301: dict(code=301, message='请求内容无数据'),
     310: dict(code=310, message='密码错误'),
     311: dict(code=311, message='时间设置错误'),
+    400: dict(code=400, message='数据重复'),
 
     666: dict(code=666, message='未知错误')
 }
