@@ -10,7 +10,7 @@ from .views import views
 urlpatterns = [
     path('managerSide/register/', views.manager_register, name='manager_register'),
     path('managerSide/login/', views.manager_login, name='manager_login'),
-    path('managerSide/clubDesc/', views.club_info, name='club_desc'),
+    path('managerSide/clubDesc/', views.add_club_info, name='club_desc'),
     path('managerSide/findApps/<int:dept_id>/', views.find_apps, name='find_apps'),
     path('managerSide/editNotice/', views.edit_notice, name='edit_notice'),
     path('managerSide/findDept/', views.find_depts, name='find_depts'),

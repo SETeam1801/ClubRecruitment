@@ -56,7 +56,7 @@ def manager_login(request):
 @csrf_exempt
 @auth_permission_required(user_type='admin')
 @post_log
-def club_info(_request, req_js, user):
+def add_club_info(_request, req_js, user):
     """
 
     :param _request:

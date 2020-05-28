@@ -27,6 +27,7 @@ EMAIL_HOST_PASSWORD = 'LUICSMSJSIJAWWRG'
 
 EMAIL_SUBJECT_PREFIX = '[招新通]'
 # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
+EMAIL_USE_SSL = True
 
 
 DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
