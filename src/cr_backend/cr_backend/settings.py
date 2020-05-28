@@ -19,7 +19,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SMTP地址
 EMAIL_HOST = 'smtp.163.com'
 # SMTP端口
-EMAIL_PORT = 25
+EMAIL_PORT = 465
 # 自己的邮箱
 EMAIL_HOST_USER = '13652831404@163.com'
 # 自己的邮箱授权码，非密码
