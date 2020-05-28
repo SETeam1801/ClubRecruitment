@@ -43,7 +43,7 @@ REP_STATUS = {
     201: dict(code=201, message='注册错误，手机号已被注册'),
     210: dict(code=210, message='无验证头部或验证类型错误'),
     211: dict(code=211, message='请求目标不存在'),
-    300: dict(code=300, message='请求字段错误'),
+    300: dict(code=300, message='请求字段错误或为空'),
     301: dict(code=301, message='请求内容无数据'),
     310: dict(code=310, message='密码错误'),
     311: dict(code=311, message='时间设置错误'),
