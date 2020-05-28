@@ -21,6 +21,7 @@ urlpatterns = [
     path('managerSide/sendMails/', views.send_mails, name='send_mails'),
     path('managerSide/clubInfo/', views.club_info, name='club_info'),
     path('managerSide/findStu/<int:app_id>/', views.stu_info, name='stu_info'),
+    path('managerSide/nextRound/<int:dept_id>/', views.next_round, name='next_round'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),
@@ -31,8 +32,6 @@ urlpatterns = [
     path('studentSide/uploadAvatar/', views.upload_avatar, name='upload_avatar'),
     path('studentSide/enteredPage/', views.entered_page, name='entered_page'),
     path('studentSide/changePersonalInformation/', views.change_info, name='change_info'),
-
-
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

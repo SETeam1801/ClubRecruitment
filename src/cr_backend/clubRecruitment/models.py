@@ -87,7 +87,7 @@ class Recruitment(models.Model):
     Student = models.ForeignKey('Student', on_delete=models.CASCADE)
     Department = models.ForeignKey('Department', on_delete=models.CASCADE)
     stu_status = models.IntegerField(default=1)
-    # 1是第一轮，0是不通过，100是通过
+    # 1是考核中，0是不通过，2是录取
 
 
 class Notice(models.Model):
@@ -113,7 +113,7 @@ class Department(models.Model):
     add = models.TextField(default='')
     status = models.IntegerField(default=0)
     current_round = models.IntegerField(default=1)
-    # 0表示未招新，1表示开始招新
+    # 0表示未招新，1表示第1轮，以此类推，current_round > times时，考核结束
 
 
 

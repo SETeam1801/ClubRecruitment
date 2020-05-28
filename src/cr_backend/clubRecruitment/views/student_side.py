@@ -54,6 +54,7 @@ def student_login(request):
 @post_log
 def change_info(_request, req_js, stu):
     try:
+        assert req_js['phoNum'] != ''
         stu.user_name = req_js['userName']
         stu.stu_id = req_js['stuId']
         stu.school = req_js['school']
@@ -63,7 +64,7 @@ def change_info(_request, req_js, stu):
         stu.pho_num = req_js['phoNum']
         stu.save()
         rep = settings.REP_STATUS[100]
-    except KeyError:
+    except KeyError or AssertionError:
         rep = settings.REP_STATUS[300]
     return JsonResponse(rep, safe=False)
 
@@ -102,7 +103,7 @@ def club_apply(_request, req_js, stu):
     try:
         club = Club.objects.get(pk=req_js['clubId'])
         dept = Department.objects.get(pk=req_js['deptId'])
-        assert len(Recruitment.objects.filter(Department=dept)) == 0
+        assert len(Recruitment.objects.filter(Student=stu, Department=dept)) == 0
         rec = Recruitment(
             stu_name=req_js['stuName'],
             stu_id=req_js['stuId'],

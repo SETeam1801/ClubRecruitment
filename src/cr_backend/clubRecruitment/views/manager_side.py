@@ -92,11 +92,11 @@ def find_apps(request, _admin, dept_id):
                     app_data['stuName'] = app.stu_name
                     stu = app.Student
                     app_data['img'] = stu.avatar
-                    if rep['data']['status'] == 0 and app.stu_status != 0:
-                        rep['data']['status'] = app.stu_status
+                    app_data['status'] = app.stu_status
                     rep['data']['students'].append(app_data)
+                rep['data']['round'] = dept.current_round
                 rep['data']['stuNum'] = len(apps)
-                rep['data']['passNum'] = len([app for app in apps if app.stu_status > dept.times])
+                rep['data']['passNum'] = len([app for app in apps if app.stu_status == 2])
                 rep['data']['deleteNum'] = len([app for app in apps if app.stu_status == 0])
         except Department.DoesNotExist:
             rep = settings.REP_STATUS[211]
@@ -177,9 +177,7 @@ def delete_dept(_request, req_js, _admin):
     :return:
     """
     try:
-        delete_list = req_js['list']
-        for pk in delete_list:
-            Department.objects.get(pk=pk).delete()
+        Department.objects.get(dept_name=req_js['deptName']).delete()
         rep = settings.REP_STATUS[100]
     except KeyError:
         rep = settings.REP_STATUS[300]
@@ -339,6 +337,28 @@ def stu_info(request, _admin, app_id):
             rep['data']['mailbox'] = app.mailbox
             rep['data']['stuDesc'] = app.stu_desc
         except Recruitment.DoesNotExist:
+            rep = settings.REP_STATUS[211]
+    else:
+        rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+def next_round(request, _admin, dept_id):
+    if request.method == 'GET':
+        try:
+            dept = Department.objects.get(pk=dept_id)
+            dept.current_round += 1
+            if dept.current_round > dept.times:
+                apps = Recruitment.objects.filter(Department=dept)
+                for app in apps:
+                    if app.stu_status != 0:
+                        app.stu_status = 2
+                        app.save()
+            dept.save()
+            rep = settings.REP_STATUS[100]
+        except Department.DoesNotExist:
             rep = settings.REP_STATUS[211]
     else:
         rep = settings.REP_STATUS[111]
