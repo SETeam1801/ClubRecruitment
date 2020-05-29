@@ -116,20 +116,22 @@ def login(request, lg_type):
         elif lg_type == 1:
             try:
                 student = Student.objects.get(pho_num=req_js['phoNum'])
-                if student.pass_word != req_js['passWord']:
-                    rep = settings.REP_STATUS[310]
+                if student.pk == 1:
+                    rep = settings.REP_STATUS[401]
                 else:
-                    rep = settings.REP_STATUS[100]
-
-                    rep['data'] = dict(
-                        userName=student.user_name,
-                        stuId=student.stu_id,
-                        school=student.school,
-                        college=student.college,
-                        mailbox=student.mailbox,
-                        img=settings.DEFAULT_IMG if student.avatar == '' else student.avatar,
-                        token=student.token)
-                    rep['data']['class'] = student.stu_class
+                    if student.pass_word != req_js['passWord']:
+                        rep = settings.REP_STATUS[310]
+                    else:
+                        rep = settings.REP_STATUS[100]
+                        rep['data'] = dict(
+                            userName=student.user_name,
+                            stuId=student.stu_id,
+                            school=student.school,
+                            college=student.college,
+                            mailbox=student.mailbox,
+                            img=settings.DEFAULT_IMG if student.avatar == '' else student.avatar,
+                            token=student.token)
+                        rep['data']['class'] = student.stu_class
             except KeyError:
                 rep = settings.REP_STATUS[300]
             except Student.DoesNotExist:

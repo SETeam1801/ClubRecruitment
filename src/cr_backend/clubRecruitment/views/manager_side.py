@@ -242,6 +242,36 @@ def edit_recruitment(_request, req_js, _admin):
 
 @csrf_exempt
 @auth_permission_required(user_type='admin')
+def edit_recruitment(_request, admin):
+    try:
+        
+        dept = Department.objects.get(pk=req_js['deptId'])
+        dept.start_time = req_js['startTime']
+        dept.end_time = req_js['endTime']
+        s_time = time.mktime(time.strptime(dept.start_time, '%Y-%m-%d %H:%M:%S'))
+        e_time = time.mktime(time.strptime(dept.end_time, '%Y-%m-%d %H:%M:%S'))
+        assert s_time < e_time  # 防止时间错误
+        dept.qq = req_js['qq']
+        dept.times = req_js['times']
+        dept.max_num = req_js['maxNum']
+        dept.recruit_num = req_js['recruitNum']
+        dept.standard = req_js['standard']
+        dept.add = req_js['add']
+        dept.status = 1
+        dept.save()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Department.DoesNotExist:
+        rep = settings.REP_STATUS[211]
+    except AssertionError:
+        rep = settings.REP_STATUS[311]
+    return JsonResponse(rep, safe=False)
+
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
 def upload_img(request, admin):
     if request.method == 'POST':
         avatar = request.FILES.get('img')
@@ -262,6 +292,28 @@ def upload_img(request, admin):
             club.img4 = rep['url']
         club.place = (club.place + 1) % 5
         club.save()
+    else:
+        rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+def delete_img(request, admin, img_id):
+    if request.method == 'GET':
+        club = Club.objects.get(Admin=admin)
+        if img_id == 0:
+            club.img0 = ''
+        elif img_id == 1:
+            club.img1 = ''
+        elif img_id == 2:
+            club.img2 = ''
+        elif img_id == 3:
+            club.img3 = ''
+        elif img_id == 4:
+            club.img4 = ''
+        club.save()
+        rep = settings.REP_STATUS[100]
     else:
         rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)
@@ -296,7 +348,25 @@ def club_info(_request, admin):
         rep['data']['clubName'] = club.club_name
         rep['data']['clubDesc'] = club.club_desc
         rep['data']['clubPictureUrl'] = list()
-        for i in range(5):
+        if club.img0 != '':
+            rep['data']['clubPictureUrl'].append(club.img0)
+        else:
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        if club.img1 != '':
+            rep['data']['clubPictureUrl'].append(club.img1)
+        else:
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        if club.img2 != '':
+            rep['data']['clubPictureUrl'].append(club.img2)
+        else:
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        if club.img3 != '':
+            rep['data']['clubPictureUrl'].append(club.img3)
+        else:
+            rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
+        if club.img4 != '':
+            rep['data']['clubPictureUrl'].append(club.img4)
+        else:
             rep['data']['clubPictureUrl'].append(settings.DEFAULT_IMG)
         rep['data']['dept'] = list()
         for dept in depts:
@@ -403,3 +473,22 @@ def delete_apply(_request, req_js, _admin):
     except Department.DoesNotExist or Recruitment.DoesNotExist:
         rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+@post_log
+def change_dept_info(_request, req_js, _admin):
+    try:
+        dept = Department.objects.get(dept_name=req_js['pastName'])
+        dept.dept_name = req_js['newName']
+        dept.dept_desc = req_js['deptDesc']
+        dept.save()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Department.DoesNotExist or Recruitment.DoesNotExist:
+        rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)
+
+

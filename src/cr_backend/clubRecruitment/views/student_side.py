@@ -46,6 +46,7 @@ def student_login(request):
     :param request:
     :return:
     """
+
     return login(request, lg_type=1)
 
 
