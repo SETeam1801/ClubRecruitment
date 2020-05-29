@@ -22,6 +22,8 @@ urlpatterns = [
     path('managerSide/clubInfo/', views.club_info, name='club_info'),
     path('managerSide/findStu/<int:app_id>/', views.stu_info, name='stu_info'),
     path('managerSide/nextRound/<int:dept_id>/', views.next_round, name='next_round'),
+    path('managerSide/stopApply/', views.stop_apply, name='stop_apply'),
+    path('managerSide/deleteApply/', views.delete_apply, name='delete_apply'),
 
     path('studentSide/register/', views.student_register, name='student_register'),
     path('studentSide/login/', views.student_login, name='student_login'),

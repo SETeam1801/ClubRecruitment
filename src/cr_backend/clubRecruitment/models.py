@@ -114,8 +114,3 @@ class Department(models.Model):
     status = models.IntegerField(default=0)
     current_round = models.IntegerField(default=1)
     # 0表示未招新，1表示第1轮，以此类推，current_round > times时，考核结束
-
-
-
-
-

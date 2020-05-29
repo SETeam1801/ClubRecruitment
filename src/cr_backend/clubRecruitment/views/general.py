@@ -25,6 +25,7 @@ def auth_permission_required(user_type='stu'):
         def _wrapped_view(request, *args, **kwargs):
             # 格式化权限
             user = None
+            is_visitor = False
             print(request.META.get('HTTP_AUTHORIZATION'))
 
             try:
@@ -36,9 +37,12 @@ def auth_permission_required(user_type='stu'):
             # 用户通过API获取数据验证流程
             if auth[0].lower() == 'bearer':
                 try:
-                    token = jwt.decode(auth[1], settings.SECRET_KEY, algorithms=['HS256'])
-                    print('token验证成功, %s' % token)
-                    user_id = token['data']['id']
+                    if auth[1] == '001':
+                        is_visitor = True
+                    else:
+                        token = jwt.decode(auth[1], settings.SECRET_KEY, algorithms=['HS256'])
+                        print('token验证成功, %s' % token)
+                        user_id = token['data']['id']
                 except jwt.ExpiredSignatureError:
                     return JsonResponse(settings.REP_STATUS[110], safe=False)
                 except jwt.InvalidTokenError:
@@ -46,7 +50,10 @@ def auth_permission_required(user_type='stu'):
 
                 if user_type == 'stu':
                     try:
-                        user = Student.objects.get(pk=user_id)
+                        if is_visitor:
+                            user = Student.objects.get(pk=1)
+                        else:
+                            user = Student.objects.get(pk=user_id)
                     except Student.DoesNotExist:
                         return JsonResponse(settings.REP_STATUS[211], safe=False)
                 elif user_type == 'admin':

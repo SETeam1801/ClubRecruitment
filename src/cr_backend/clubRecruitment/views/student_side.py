@@ -261,3 +261,5 @@ def entered_page(request, stu):
     else:
         rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)
+
+

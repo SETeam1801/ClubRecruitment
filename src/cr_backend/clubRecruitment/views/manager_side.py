@@ -272,11 +272,13 @@ def upload_img(request, admin):
 @post_log
 def send_mails(_request, req_js, _admin):
     try:
-        receivers = list()
-        for stu_id in req_js['receiverList']:
-            stu = Student.objects.get(pk=stu_id)
-            receivers.append(stu.mailbox)
-        send(req_js['title'], req_js['body'], receivers)
+        apps = Recruitment.objects.filter(pk=req_js['deptId'])
+        for app in [app for app in apps if app.stu_status != 0]:
+            stu = app.Student
+            send(req_js['passTitle'], req_js['passBody'], [stu.mailbox])
+        for app in [app for app in apps if app.stu_status == 0]:
+            stu = app.Student
+            send(req_js['failTitle'], req_js['failBody'], [stu.mailbox])
         rep = settings.REP_STATUS[100]
     except Student.DoesNotExist:
         rep = settings.REP_STATUS[211]
@@ -362,4 +364,42 @@ def next_round(request, _admin, dept_id):
             rep = settings.REP_STATUS[211]
     else:
         rep = settings.REP_STATUS[111]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+@post_log
+def stop_apply(_request, req_js, _admin):
+    try:
+        dept = Department.objects.get(pk=req_js['deptId'])
+        apps = Recruitment.objects.filter(Department=dept)
+        for stu_id in req_js['stopList']:
+            stu = Student.objects.get(pk=stu_id)
+            app = apps.get(Student=stu)
+            app.stu_status = 0
+            app.save()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Department.DoesNotExist or Recruitment.DoesNotExist:
+        rep = settings.REP_STATUS[211]
+    return JsonResponse(rep, safe=False)
+
+
+@csrf_exempt
+@auth_permission_required(user_type='admin')
+@post_log
+def delete_apply(_request, req_js, _admin):
+    try:
+        dept = Department.objects.get(pk=req_js['deptId'])
+        apps = Recruitment.objects.filter(Department=dept)
+        for stu_id in req_js['deleteList']:
+            stu = Student.objects.get(pk=stu_id)
+            apps.get(Student=stu).delete()
+        rep = settings.REP_STATUS[100]
+    except KeyError:
+        rep = settings.REP_STATUS[300]
+    except Department.DoesNotExist or Recruitment.DoesNotExist:
+        rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)
