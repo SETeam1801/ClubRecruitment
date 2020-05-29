@@ -325,13 +325,20 @@ def delete_img(request, admin, img_id):
 def send_mails(_request, req_js, _admin):
     try:
         apps = Recruitment.objects.filter(pk=req_js['deptId'])
+        fail_num = 0
         for app in [app for app in apps if app.stu_status != 0]:
-            stu = app.Student
-            send(req_js['passTitle'], req_js['passBody'], [stu.mailbox])
+            try:
+                send(req_js['passTitle'], app.stu_name + "同学你好。" + req_js['passBody'], [app.mailbox])
+            except Exception:
+                fail_num += 1
         for app in [app for app in apps if app.stu_status == 0]:
-            stu = app.Student
-            send(req_js['failTitle'], req_js['failBody'], [stu.mailbox])
+            try:
+                send(req_js['failTitle'], app.stu_name + "同学你好。" + req_js['failBody'], [app.mailbox])
+            except Exception:
+                fail_num += 1
         rep = settings.REP_STATUS[100]
+        if fail_num:
+            rep['data'] = dict(failNum=fail_num)
     except Student.DoesNotExist:
         rep = settings.REP_STATUS[211]
     return JsonResponse(rep, safe=False)
