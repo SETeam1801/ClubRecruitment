@@ -239,34 +239,34 @@ def edit_recruitment(_request, req_js, _admin):
         rep = settings.REP_STATUS[311]
     return JsonResponse(rep, safe=False)
 
-
-@csrf_exempt
-@auth_permission_required(user_type='admin')
-def edit_recruitment(_request, admin):
-    try:
-        
-        dept = Department.objects.get(pk=req_js['deptId'])
-        dept.start_time = req_js['startTime']
-        dept.end_time = req_js['endTime']
-        s_time = time.mktime(time.strptime(dept.start_time, '%Y-%m-%d %H:%M:%S'))
-        e_time = time.mktime(time.strptime(dept.end_time, '%Y-%m-%d %H:%M:%S'))
-        assert s_time < e_time  # 防止时间错误
-        dept.qq = req_js['qq']
-        dept.times = req_js['times']
-        dept.max_num = req_js['maxNum']
-        dept.recruit_num = req_js['recruitNum']
-        dept.standard = req_js['standard']
-        dept.add = req_js['add']
-        dept.status = 1
-        dept.save()
-        rep = settings.REP_STATUS[100]
-    except KeyError:
-        rep = settings.REP_STATUS[300]
-    except Department.DoesNotExist:
-        rep = settings.REP_STATUS[211]
-    except AssertionError:
-        rep = settings.REP_STATUS[311]
-    return JsonResponse(rep, safe=False)
+#
+# @csrf_exempt
+# @auth_permission_required(user_type='admin')
+# def edit_recruitment(_request, admin):
+#     try:
+#
+#         dept = Department.objects.get(pk=req_js['deptId'])
+#         dept.start_time = req_js['startTime']
+#         dept.end_time = req_js['endTime']
+#         s_time = time.mktime(time.strptime(dept.start_time, '%Y-%m-%d %H:%M:%S'))
+#         e_time = time.mktime(time.strptime(dept.end_time, '%Y-%m-%d %H:%M:%S'))
+#         assert s_time < e_time  # 防止时间错误
+#         dept.qq = req_js['qq']
+#         dept.times = req_js['times']
+#         dept.max_num = req_js['maxNum']
+#         dept.recruit_num = req_js['recruitNum']
+#         dept.standard = req_js['standard']
+#         dept.add = req_js['add']
+#         dept.status = 1
+#         dept.save()
+#         rep = settings.REP_STATUS[100]
+#     except KeyError:
+#         rep = settings.REP_STATUS[300]
+#     except Department.DoesNotExist:
+#         rep = settings.REP_STATUS[211]
+#     except AssertionError:
+#         rep = settings.REP_STATUS[311]
+#     return JsonResponse(rep, safe=False)
 
 
 
@@ -452,8 +452,10 @@ def stop_apply(_request, req_js, _admin):
         rep = settings.REP_STATUS[100]
     except KeyError:
         rep = settings.REP_STATUS[300]
-    except Department.DoesNotExist or Recruitment.DoesNotExist:
+    except Department.DoesNotExist or Recruitment.DoesNotExist or Student.DoesNotExist:
         rep = settings.REP_STATUS[211]
+    except Exception:
+        rep = settings.REP_STATUS[666]
     return JsonResponse(rep, safe=False)
 
 
