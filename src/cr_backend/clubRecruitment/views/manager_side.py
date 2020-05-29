@@ -443,7 +443,7 @@ def next_round(request, _admin, dept_id):
 def stop_apply(_request, req_js, _admin):
     try:
         for app_id in req_js['stopList']:
-            app = Recruitment.objects.get(Department=app_id)
+            app = Recruitment.objects.get(pk=app_id)
             app.stu_status = 0
             app.save()
         rep = settings.REP_STATUS[100]
