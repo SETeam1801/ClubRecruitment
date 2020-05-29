@@ -55,6 +55,7 @@ def student_login(request):
 @post_log
 def change_info(_request, req_js, stu):
     try:
+        assert len(Student.objects.filter(pho_num=req_js['phoNum'])) == 0
         assert req_js['phoNum'] != ''
         stu.user_name = req_js['userName']
         stu.stu_id = req_js['stuId']

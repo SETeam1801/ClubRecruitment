@@ -79,6 +79,7 @@ def find_apps(request, _admin, dept_id):
         try:
             dept = Department.objects.get(pk=dept_id)
             apps = Recruitment.objects.filter(Department=dept)
+            apps = [app for app in apps if app.stu_status >= 0]
             if len(apps) == 0:
                 rep = settings.REP_STATUS[301]
             else:
@@ -326,14 +327,18 @@ def send_mails(_request, req_js, _admin):
     try:
         apps = Recruitment.objects.filter(pk=req_js['deptId'])
         fail_num = 0
-        for app in [app for app in apps if app.stu_status != 0]:
+        for app in [app for app in apps if app.stu_status >= 0]:
             try:
-                send(req_js['passTitle'], app.stu_name + "同学你好。" + req_js['passBody'], [app.mailbox])
+                send(req_js['passTitle'], app.stu_name + "同学:\n" + req_js['passBody'] + '\n\n' +
+                     time.asctime(time.localtime(time.time())), [app.mailbox])
             except Exception:
                 fail_num += 1
         for app in [app for app in apps if app.stu_status == 0]:
             try:
-                send(req_js['failTitle'], app.stu_name + "同学你好。" + req_js['failBody'], [app.mailbox])
+                send(req_js['failTitle'], app.stu_name + "同学:\n" + req_js['failBody'] + '\n\n' +
+                     time.asctime(time.localtime(time.time())), [app.mailbox])
+                app.stu_status = -1
+                app.save()
             except Exception:
                 fail_num += 1
         rep = settings.REP_STATUS[100]
