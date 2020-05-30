@@ -31,14 +31,14 @@ EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = '13652831404@163.com'
 
-DEFAULT_IMG = 'https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab642b03b874fb36af' \
-              'c379311e14?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2U5Mg==,xp_5,yp_5'
+DEFAULT_IMG = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:' \
+              'ANd9GcR1ks4rXUNoVTm_y7GtSfvDIpfrDORnuQYONBNV4wPDFV0dl8E&s'
 
 REP_STATUS = {
     100: dict(code=100, message='正常'),
     101: dict(code=101, message='token错误'),
     110: dict(code=110, message='token过期'),
-    111: dict(code=111, message='请求错误'),
+    111: dict(code=111, message='请求类型错误'),
     200: dict(code=200, message='登陆时手机号或密码错误'),
     201: dict(code=201, message='注册错误，手机号已被注册'),
     210: dict(code=210, message='无验证头部或验证类型错误'),
@@ -48,6 +48,7 @@ REP_STATUS = {
     310: dict(code=310, message='密码错误'),
     311: dict(code=311, message='时间设置错误'),
     400: dict(code=400, message='数据重复'),
+    401: dict(code=401, message='游客不可登录'),
 
     666: dict(code=666, message='未知错误')
 }
