@@ -223,7 +223,7 @@ def edit_recruitment(_request, req_js, _admin):
         dept.end_time = req_js['endTime']
         s_time = time.mktime(time.strptime(dept.start_time, '%Y-%m-%d %H:%M:%S'))
         e_time = time.mktime(time.strptime(dept.end_time, '%Y-%m-%d %H:%M:%S'))
-        assert s_time < e_time  # 防止时间错误
+        assert s_time < e_time and time.time() < e_time   # 防止时间错误
         dept.qq = req_js['qq']
         dept.times = req_js['times']
         dept.max_num = req_js['maxNum']
