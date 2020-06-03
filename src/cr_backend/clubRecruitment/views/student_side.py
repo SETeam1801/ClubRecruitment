@@ -253,7 +253,7 @@ def entered_page(request, stu):
                 times = dept.times
                 dept_info['lastRound'] = '' if current_round <= 1 else \
                     to_round_str(dept.current_round - 1)
-                dept_info['lastState'] = '通过' if current_status != 0 else '不通过'
+                dept_info['lastState'] = '通过' if current_status != -1 else '不通过'
                 if dept_info['lastRound'] == '':
                     dept_info['lastState'] = ''
                 dept_info['currentRound'] = '' if current_status > times else to_round_str(dept.current_round)
