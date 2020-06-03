@@ -89,7 +89,7 @@ def find_clubs(_request, req_js, user):
                 club_data['clubId'] = club.pk
                 club_data['clubName'] = club.club_name
                 club_data['clubDesc'] = club.club_desc
-                club_data['clubPictureUrl'] = settings.DEFAULT_IMG
+                club_data['clubPictureUrl'] = club.img0 if club.img0 != '' else settings.DEFAULT_IMG
                 rep['data'].append(club_data)
         else:
             rep = settings.REP_STATUS[211]
@@ -257,7 +257,7 @@ def entered_page(request, stu):
                 if dept_info['lastRound'] == '':
                     dept_info['lastState'] = ''
                 dept_info['currentRound'] = '' if current_status > times else to_round_str(dept.current_round)
-                dept_info['nextRound'] = '' if current_status == times else to_round_str(dept.current_round + 1)
+                dept_info['nextRound'] = '' if current_status >= times else to_round_str(dept.current_round + 1)
                 club_info['entered'].append(dept_info)
             rep['data'].append(club_info)
     else:
