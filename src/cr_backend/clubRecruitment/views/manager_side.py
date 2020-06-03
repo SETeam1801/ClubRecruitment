@@ -95,6 +95,7 @@ def find_apps(request, _admin, dept_id):
                     app_data['img'] = stu.avatar
                     app_data['status'] = app.stu_status
                     rep['data']['students'].append(app_data)
+                rep['data']['students'].sort(key=lambda x: (x.get('status', 0)), reverse=True)
                 rep['data']['round'] = dept.current_round
                 rep['data']['stuNum'] = len(apps)
                 rep['data']['passNum'] = len([app for app in apps if app.stu_status != 0])
@@ -440,10 +441,13 @@ def next_round(request, _admin, dept_id):
                     if app.stu_status != 0:
                         app.stu_status = 2
                         app.save()
+            assert dept.current_round != dept.times+2
             dept.save()
             rep = settings.REP_STATUS[100]
         except Department.DoesNotExist:
             rep = settings.REP_STATUS[211]
+        except AssertionError:
+            rep = settings.REP_STATUS[301]
     else:
         rep = settings.REP_STATUS[111]
     return JsonResponse(rep, safe=False)
